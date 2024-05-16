@@ -1,0 +1,89 @@
+Abi_VPC [Ohio]:
+ 
+	Ansible Master's Private IP: 10.0.0.58
+			 Public IP : 3.131.133.240
+
+	Server1 (Local Machine) Private IP: 10.0.0.49
+				Public IP : 18.218.223.174
+
+
+
+Destination_VPC [Mumbai]:
+	
+	Server2_Connecting to VPC peered instance's Private IP: 172.31.2.98 
+						    Public IP : 3.111.34.249
+
+
+
+Different Account without VPC Peering [N_Virginia]:
+
+	SERVER3_without VPC peering instance's Private IP : 172.31.24.160
+						Public IP : 54.227.193.156
+
+
+_________________________________________________________________________________________________________
+
+Ansible Code for launching EC2 instance:
+
+#### Lauch Basic EC2 instance in mumbai region.
+
+
+- name: EC2 instance launch
+  hosts: localhost
+  tasks:
+
+  - ec2_instance:
+      key_name: Mumbai_key
+      region: ap-south-1
+      instance_type: t2.micro
+      image_id: ami-0cc9838aa7ab1dce7
+	  count: 1
+	  wait: yes
+	  security_group: sg-04e7fd8bbc15e0cf5
+	  network:
+		assing_public_ip: true
+      tags:
+        name: Abhi_server
+
+_________________________________________________________________________________________________________
+
+ #### In order to stop this instance
+
+- name: Stop instances
+  hosts: localhost
+  tasks:
+    - ec2_instance:
+        state: stopped
+        region: ap-south-1
+        tags:
+           name: Abhi_server
+
+_________________________________________________________________________________________________________
+
+#### In order to start this instance
+
+- name: Start instances
+  hosts: localhost
+  tasks:
+    - ec2_instnace:
+        state: running
+        region: ap-south-1
+        tags:
+           name: Abhi_server
+
+__________________________________________________________________________________________________________
+
+#### In order to Terminate this instance
+
+- name: Terminate instances
+  hosts: localhost
+  tasks:
+    - ec2_instnace:
+        state: absent
+        region: ap-south-1
+        instance_ids: i-0f5f241157627ce96
+
+
+
+
+	
